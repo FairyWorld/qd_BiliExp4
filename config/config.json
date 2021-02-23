@@ -249,29 +249,29 @@
             "SKEY": "" */
         },
         "hooks": [ // 在这里以数组的形式定义所有消息推送回调接口
-            {
-                "enable": false, // 开关，需要开启请直接把本项删除或设置为true
-                "name": "server酱消息推送", // webhook名称，仅用于日志显示不用于实际消息推送
-                "msg_separ": "\n\n", // 消息分隔符，推送消息时将每一条消息用两个换行符(\n)隔开
-                "method": 1, // 请求方式,0为get,1为post,3为以json方式post
-                "url": "https://sc.ftqq.com/{SCKEY}.send", // 请求地址,{SCKEY}为对上面variable变量中的SCKEY的引用，当然也可以直接把SCKEY的值放在url里面
-                "params": { // 请求参数,server酱推送需要text和desp两个参数，分别把变量里title和msg_simple(简化消息)赋值进去
-                    "text": "{title}",
-                    "desp": "{msg_simple}"
-                }
-            }, //若要实现其他消息推送接口，需要自己查阅相关文档构建method，url和params三个参数，下面是邮箱推送和telegram_bot推送的例子，其他平台自行探索
-            {
-                "enable": false,
-                "name": "邮箱消息推送",
-                "msg_separ": "<br>",
-                "method": 1,
-                "url": "https://email.berfen.com/api",
-                "params": {
-                    "to": "{email}",
-                    "title": "{title}",
-                    "text": "{msg_simple}"
-                }
-            },
+            // {
+            //     "enable": false, // 开关，需要开启请直接把本项删除或设置为true
+            //     "name": "server酱消息推送", // webhook名称，仅用于日志显示不用于实际消息推送
+            //     "msg_separ": "\n\n", // 消息分隔符，推送消息时将每一条消息用两个换行符(\n)隔开
+            //     "method": 1, // 请求方式,0为get,1为post,3为以json方式post
+            //     "url": "https://sc.ftqq.com/{SCKEY}.send", // 请求地址,{SCKEY}为对上面variable变量中的SCKEY的引用，当然也可以直接把SCKEY的值放在url里面
+            //     "params": { // 请求参数,server酱推送需要text和desp两个参数，分别把变量里title和msg_simple(简化消息)赋值进去
+            //         "text": "{title}",
+            //         "desp": "{msg_simple}"
+            //     }
+            // }, //若要实现其他消息推送接口，需要自己查阅相关文档构建method，url和params三个参数，下面是邮箱推送和telegram_bot推送的例子，其他平台自行探索
+            // {
+            //     "enable": false,
+            //     "name": "邮箱消息推送",
+            //     "msg_separ": "<br>",
+            //     "method": 1,
+            //     "url": "https://email.berfen.com/api",
+            //     "params": {
+            //         "to": "{email}",
+            //         "title": "{title}",
+            //         "text": "{msg_simple}"
+            //     }
+            // },
             {
                 "enable": true,
                 "name": "酷推个人QQ消息推送",
@@ -306,18 +306,19 @@
     "log_file": "BiliExp.log", // 输出日志文件，不输出请留空，也可填写完整路径
     "log_console": true, // 是否把日志输出到控制台
     "users": [
-        { //账户数组，每个账户包含一个cookieDatas和tasks参数，使用actions的用户可以使用secrets(biliconfig)指定cookie而不用本参数
-            "cookieDatas": { // cookie获取方式见项目说明
-                "SESSDATA": "账号SESSDATA",
-                "bili_jct": "账号bili_jct",
-                "DedeUserID": "账号uid"
-            },
-            "show_name": "", /* 昵称，用于日志，消息推送，填空则默认使用账号昵称，在actions上不想显示真实昵称时使用
-        /* 下面tasks参数与最上面default参数作用相同，但优先级更高，用于定制每个账号的参数，
-             tasks参数中不存在的配置用default代替，为空则相当于直接使用default中所有配置当做这个账户的配置
-             default中不存在的配置在tasks参数中出现则无效(default中支持以删除功能配置的方式禁用功能，这种禁用是全局的，在这里配置开启也无效) */
-            "tasks": {}
-        } /*, { //下面注释掉的是第二个账号的参数例子，以此类推多个账号，单账号仅填写上面内容
+        // { //账户数组，每个账户包含一个cookieDatas和tasks参数，使用actions的用户可以使用secrets(biliconfig)指定cookie而不用本参数
+        //     "cookieDatas": { // cookie获取方式见项目说明
+        //         "SESSDATA": "账号SESSDATA",
+        //         "bili_jct": "账号bili_jct",
+        //         "DedeUserID": "账号uid"
+        //     },
+        //     "show_name": "", /* 昵称，用于日志，消息推送，填空则默认使用账号昵称，在actions上不想显示真实昵称时使用
+        // /* 下面tasks参数与最上面default参数作用相同，但优先级更高，用于定制每个账号的参数，
+        //      tasks参数中不存在的配置用default代替，为空则相当于直接使用default中所有配置当做这个账户的配置
+        //      default中不存在的配置在tasks参数中出现则无效(default中支持以删除功能配置的方式禁用功能，这种禁用是全局的，在这里配置开启也无效) */
+        //     "tasks": {}
+        // } 
+        /*, { //下面注释掉的是第二个账号的参数例子，以此类推多个账号，单账号仅填写上面内容
         "cookieDatas": {
             "SESSDATA": "4a5f1c63%2C1785313721%2Cdf9fc*a1",
             "bili_jct": "cf28ba45824d443646907a5c4da8cf1",
