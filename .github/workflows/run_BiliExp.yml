@@ -2,7 +2,7 @@ name: "run BiliExp"
 
 on:
   schedule:
-    - cron: "0 23 * * *" # UTC+8 的 7 点执行，修改时注意时区
+    - cron: "0 0 * * *" # UTC+8 的 8 点执行，修改时注意时区
   watch:
     types: started
   workflow_dispatch:
