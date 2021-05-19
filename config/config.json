@@ -9,7 +9,7 @@
     },
     "default": {
         "vip_task": { // 任务:自动领取大会员B币劵优惠券，花费剩余B币劵，下面为本功能详细配置
-            "enable": true, //任务开关，值为true或false分别代表开启和关闭
+            "enable": false, //任务开关，值为true或false分别代表开启和关闭
             "receiveDay": 1, // 尝试获取B币劵优惠券的日期，值为整数，1为当月第1天
             "BpCharge": { // 设置花费B币劵的方式，兑换顺序为下方配置顺序，可以删除或更换顺序，若某项兑换失败顺延到下一项继续兑换直到最后一项或劵花费完毕
                 "charge": 5, // 值为整数，给自己充电，花费劵的数量为5
@@ -18,10 +18,10 @@
             },
             "chargeDay": 0 // 尝试花费B币劵的日期，0为当月最后1天
         },
-        "group_sign_task": true, // 任务:应援团签到，值为true或false分别代表开启和关闭
-        "xliveSign_task": true, // 任务:直播签到，值为true或false分别代表开启和关闭
+        "group_sign_task": false, // 任务:应援团签到，值为true或false分别代表开启和关闭
+        "xliveSign_task": false, // 任务:直播签到，值为true或false分别代表开启和关闭
         "xlive_bag_send_task": { // 任务:送出即将到期的直播间背包里的礼物，值为true或false分别代表开启和关闭，下面为本功能详细配置
-            "enable": true, //任务开关，值为true或false分别代表开启和关闭
+            "enable": false, //任务开关，值为true或false分别代表开启和关闭
             "room_id": 21652717, // 送给白神遥 // 值为整数，送礼物的直播间，0为随机取直播间
             "expire": 172800 // 值为整数，距离过期的时间(单位为秒),172800为两天，若礼物将在这个时间内过期则会被随机送出
         },
@@ -131,9 +131,9 @@
             }
             /*-----------------------------end---------------------------------------------------- */
         },
-        "watch_task": true, // 任务:模拟观看一个随机视频(加经验值，会留下观看历史记录)，值为true或false分别代表开启和关闭，删除75行(即本行)可关闭本任务
-        "share_task": true, // 任务:模拟分享一个随机视频(加经验值，并不会真的分享)，值为true或false分别代表开启和关闭，删除76行(即本行)可关闭本任务
-        "silver2coin_task": true, // 任务:银瓜子兑换硬币，值为true或false分别代表开启和关闭，删除77行(即本行)可关闭本任务
+        "watch_task": false, // 任务:模拟观看一个随机视频(加经验值，会留下观看历史记录)，值为true或false分别代表开启和关闭，删除75行(即本行)可关闭本任务
+        "share_task": false, // 任务:模拟分享一个随机视频(加经验值，并不会真的分享)，值为true或false分别代表开启和关闭，删除76行(即本行)可关闭本任务
+        "silver2coin_task": false, // 任务:银瓜子兑换硬币，值为true或false分别代表开启和关闭，删除77行(即本行)可关闭本任务
         "lottery_task": { // 任务:动态抽奖转发评论点赞
             "enable": false, //任务开关，值为true或false分别代表开启和关闭
             "reply": [
@@ -192,7 +192,7 @@
             ] //过滤关键字，值为字符串数组
         },
         "clean_dynamic_task": { // 任务:清理自己的动态，包括过期抽奖，失效动态
-            "enable": true, // 任务开关，值为true或false分别代表开启和关闭
+            "enable": false, // 任务开关，值为true或false分别代表开启和关闭
             "black_keywords": [
                 "转发动态",
                 "关注",
@@ -204,13 +204,13 @@
                 30
             ] // 限制删除动态的时间区间，值为二维整数数组(单位天)，这里表示只对7天之前30天以内的动态执行清理，天数按执行当天24点向前计算
         },
-        "manga_sign_task": true, // 任务:漫画app签到
+        "manga_sign_task": false, // 任务:漫画app签到
         "exchangeCoupons_task": { // 任务:漫画积分兑换福利券，请保证程序在中午12点0分30秒左右启动，其他时候启动本功能几乎都会兑换失败
             "enable": false, // 任务开关，值为true或false分别代表开启和关闭
             "num": 0 // 兑换数量，值为整数
         },
         "manga_vip_reward_task": { // 任务:领取每月大会员漫画权益(漫读劵)
-            "enable": true, // 任务开关，值为true或false分别代表开启和关闭
+            "enable": false, // 任务开关，值为true或false分别代表开启和关闭
             "days": [
                 1
             ] // 每月尝试领取的日期,值为整数数组,指定多个日期会重复尝试领取
@@ -279,7 +279,7 @@
             //     }
             // },
             {
-                "enable": true,
+                "enable": false,
                 "name": "酷推个人QQ消息推送",
                 "method": 3,
                 "url": "https://push.xuthus.cc/send/{SKEY}",
@@ -312,29 +312,5 @@
     "log_file": "BiliExp.log", // 输出日志文件，不输出请留空，也可填写完整路径
     "log_console": true, // 是否把日志输出到控制台
     "users": [
-        // { //账户数组，每个账户包含一个cookieDatas和tasks参数，使用actions的用户可以使用secrets(biliconfig)指定cookie而不用本参数
-        //     "cookieDatas": { // cookie获取方式见项目说明
-        //         "SESSDATA": "账号SESSDATA",
-        //         "bili_jct": "账号bili_jct",
-        //         "DedeUserID": "账号uid"
-        //     },
-        //     "show_name": "", /* 昵称，用于日志，消息推送，填空则默认使用账号昵称，在actions上不想显示真实昵称时使用
-        // /* 下面tasks参数与最上面default参数作用相同，但优先级更高，用于定制每个账号的参数，
-        //      tasks参数中不存在的配置用default代替，为空则相当于直接使用default中所有配置当做这个账户的配置
-        //      default中不存在的配置在tasks参数中出现则无效(default中支持以删除功能配置的方式禁用功能，这种禁用是全局的，在这里配置开启也无效) */
-        //     "tasks": {}
-        // } 
-        /*, { //下面注释掉的是第二个账号的参数例子，以此类推多个账号，单账号仅填写上面内容
-        "cookieDatas": {
-            "SESSDATA": "4a5f1c63%2C1785313721%2Cdf9fc*a1",
-            "bili_jct": "cf28ba45824d443646907a5c4da8cf1",
-            "DedeUserID": "914624742"
-        },
-        "show_name": "账号2",
-        "tasks": {                //上面default参数中投币任务和风纪委任务都是开启的，这里在第二个账号上关闭而不影响其他任务和其他账号
-            "coin_task": false,   //直接赋值false是简化的关闭方法，也可以像default中那样用enable参数关闭，若只修改投币数量(配置中的其中一项)则必须按照default中的格式指定
-            "judgement_task": false
-        }
-    }*/
     ]
 }
