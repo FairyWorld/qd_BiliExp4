@@ -6,7 +6,13 @@ from concurrent.futures import CancelledError
 from async_timeout import timeout
 from typing import Awaitable, Tuple
 
-voteInfo = ("未投票", "封禁", "否认", "弃权", "删除")
+# voteInfo = ("未投票", "封禁", "否认", "弃权", "删除")
+voteInfo = {
+    11: '好',
+    12: '普通',
+    13: '差',
+    14: '无法判断'
+}
 
 async def judgement_task(biliapi: asyncbili, 
                          task_config: dict
@@ -48,7 +54,8 @@ async def judgement_task(biliapi: asyncbili,
             while True:
                 while True:
                     try:
-                        ret = await biliapi.juryCaseObtain()
+                        # ret = await biliapi.juryCaseObtain()
+                        ret = await biliapi.juryNewCaseNext()
                     except CancelledError as e:
                         raise e
                     except Exception as e:
@@ -64,27 +71,30 @@ async def judgement_task(biliapi: asyncbili,
                     elif ret["code"] != 0:
                         logging.warning(f'{biliapi.name}: 获取风纪委员案件失败，信息为：{ret["message"]}')
                         break
-                    cid = ret["data"]["id"]
+                    # cid = ret["data"]["id"]
+                    case_id = ret["data"]["case_id"]
+                    cid = case_id
                     params = task_config.get("params", {})
-                    default = True
-                    try:
-                        ret = await biliapi.juryCase(cid)
-                    except CancelledError as e:
-                        raise e
-                    except Exception as e:
-                        logging.warning(f'{biliapi.name}: 获取风纪委员案件他人投票结果异常，原因为{str(e)}，使用默认投票参数')
-                    else:
-                        if ret["code"] == 0:
-                            vote = [(4, ret["data"]["voteDelete"]), (2, ret["data"]["voteBreak"]), (1, ret["data"]["voteRule"])]
-                            vote.sort(key=lambda x: x[1], reverse=True)
-                            params = params.copy()
-                            params["vode"] = vote[0][0]
-                            default = False
-                        else:
-                            logging.warning(f'{biliapi.name}: 获取风纪委员案件他人投票结果异常，原因为{ret["message"]}，使用默认投票参数')
+                    default = False
+                    # try:
+                    #     ret = await biliapi.juryCase(cid)
+                    # except CancelledError as e:
+                    #     raise e
+                    # except Exception as e:
+                    #     logging.warning(f'{biliapi.name}: 获取风纪委员案件他人投票结果异常，原因为{str(e)}，使用默认投票参数')
+                    # else:
+                    #     if ret["code"] == 0:
+                    #         vote = [(4, ret["data"]["voteDelete"]), (2, ret["data"]["voteBreak"]), (1, ret["data"]["voteRule"])]
+                    #         vote.sort(key=lambda x: x[1], reverse=True)
+                    #         params = params.copy()
+                    #         params["vode"] = vote[0][0]
+                    #         default = False
+                    #     else:
+                    #         logging.warning(f'{biliapi.name}: 获取风纪委员案件他人投票结果异常，原因为{ret["message"]}，使用默认投票参数')
 
                     try:
-                        ret = await biliapi.juryVote(cid, **params) #将参数params展开后传参
+                        await sleep(11) # 延时 11 秒
+                        ret = await biliapi.juryNewVote(case_id, **params) #将参数params展开后传参
                     except CancelledError as e:
                         raise e
                     except Exception as e:
@@ -95,7 +105,8 @@ async def judgement_task(biliapi: asyncbili,
                             if default:
                                 logging.info(f'{biliapi.name}: 风纪委员成功为id为{cid}的案件投({voteInfo[params["vote"]]})票')
                             else:
-                                logging.info(f'{biliapi.name}: 风纪委员成功为id为{cid}的案件投({voteInfo[params["vote"]]})票，当前案件投票数({voteInfo[vote[0][0]]}{vote[0][1]}票),({voteInfo[vote[1][0]]}{vote[1][1]}票),({voteInfo[vote[2][0]]}{vote[2][1]}票)')
+                                logging.info(f'{biliapi.name}: 风纪委员成功为id为{cid}的案件投({voteInfo[params["vote"]]})票')
+                                # logging.info(f'{biliapi.name}: 风纪委员成功为id为{cid}的案件投({voteInfo[params["vote"]]})票，当前案件投票数({voteInfo[vote[0][0]]}{vote[0][1]}票),({voteInfo[vote[1][0]]}{vote[1][1]}票),({voteInfo[vote[2][0]]}{vote[2][1]}票)')
                         else:   
                             logging.warning(f'{biliapi.name}: 风纪委员投票id为{cid}的案件失败，信息为：{ret["message"]}')
 

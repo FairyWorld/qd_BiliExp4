@@ -1640,6 +1640,38 @@ class asyncBiliApi(object):
         async with self._session.post(url, data=post_data, verify_ssl=False) as r:
             return await r.json()
 
+    async def juryNewCaseNext(self) -> Awaitable[Dict[str, Any]]:
+        '''
+        新版 风纪委员拉取一个案件用于风纪委员投票
+        '''
+        url = 'https://api.bilibili.com/x/credit/v2/jury/case/next'
+        async with self._session.get(url, verify_ssl=False) as r:
+            return await r.json()
+
+    async def juryNewVote(self, 
+                        case_id: str,
+                        vote: int,
+                        content: str,
+                        anonymous: int
+                        ) -> Awaitable[Dict[str, Any]]:
+        '''
+        新版 风纪委员投票
+        case_id: AC1xx411c7kB // 案件id
+        vote: 12 // 投票选项，11：好，12：普通；13：差，14：无法判断
+        content: // 评论
+        anonymous: 1 // 是否匿名
+        '''
+        url = 'https://api.bilibili.com/x/credit/v2/jury/vote'
+        post_data = {
+            "case_id": case_id,
+            "vote": vote,
+            "content": content,
+            "anonymous": anonymous,
+            "csrf": self._bili_jct
+            }
+        async with self._session.post(url, data=post_data, verify_ssl=False) as r:
+            return await r.json()
+
     async def accInfo(self,
                       uid: int
                       ) -> None:
