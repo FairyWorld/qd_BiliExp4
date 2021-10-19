@@ -111,10 +111,19 @@ async def judgement_task(biliapi: asyncbili,
                     #         logging.warning(f'{biliapi.name}: 获取风纪委员案件他人投票结果异常，原因为{ret["message"]}，使用默认投票参数')
 
                     try:
+                        params_test = {
+                            "case_id": case_id,
+                            "vote": 0,
+                            "content": "",
+                            "anonymous": 0,
+                        }
+                        ret1 = await biliapi.juryNewVote(case_id, **params_test)
+                        logging.info(f"vote1:{str(ret1)}")
                         await sleep(11)  # 延时 11 秒
                         # 将参数params展开后传参
                         params = params.copy()
                         params["vote"] = vote_item["vote"]
+                        logging.info(f"params:{params}")
                         ret = await biliapi.juryNewVote(case_id, **params)
                     except CancelledError as e:
                         raise e
