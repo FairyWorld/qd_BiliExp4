@@ -91,8 +91,7 @@ async def judgement_task(biliapi: asyncbili,
                         logging.warning(
                             f'{biliapi.name}: 获取{cid}的案件信息异常，原因为{str(e)}')
                         break
-                    vote_num = params.get('vote', 1) - 1  # 1,2,3,4 -> 0,1,2,3
-                    vote_items = caseInfo["data"]["vote_items"]
+                    vote_num = params.get('vote', 1)  # 0,1,2,3
                     vote_item = caseInfo["data"]["vote_items"][vote_num]
 
                     # try:
@@ -115,7 +114,7 @@ async def judgement_task(biliapi: asyncbili,
                         await sleep(11)  # 延时 11 秒
                         # 将参数params展开后传参
                         params = params.copy()
-                        params["vote"] = vote_item.vote
+                        params["vote"] = vote_item["vote"]
                         ret = await biliapi.juryNewVote(case_id, **params)
                     except CancelledError as e:
                         raise e
