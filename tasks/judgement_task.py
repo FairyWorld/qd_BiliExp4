@@ -14,7 +14,8 @@ voteInfo = {
     14: '无法判断'
 }
 
-async def judgement_task(biliapi: asyncbili, 
+
+async def judgement_task(biliapi: asyncbili,
                          task_config: dict
                          ) -> Awaitable:
     '''风纪委员会投票任务'''
@@ -25,7 +26,8 @@ async def judgement_task(biliapi: asyncbili,
         webhook.addMsg('msg_simple', f'{biliapi.name}:风纪委投票失败\n')
         return
     if ret["code"] == 25005:
-        logging.warning(f'{biliapi.name}: 风纪委员投票失败，请去https://www.bilibili.com/judgement/apply 申请成为风纪委员')
+        logging.warning(
+            f'{biliapi.name}: 风纪委员投票失败，请去https://www.bilibili.com/judgement/apply 申请成为风纪委员')
         webhook.addMsg('msg_simple', f'{biliapi.name}:不是风纪委\n')
         return
     elif ret["code"] != 0:
@@ -37,8 +39,10 @@ async def judgement_task(biliapi: asyncbili,
         webhook.addMsg('msg_simple', f'{biliapi.name}:风纪委资格失效\n')
         return
 
-    logging.info(f'{biliapi.name}: 拥有风纪委员身份，开始获取案件投票，当前裁决正确率为：{ret["data"]["rightRadio"]}%')
-    webhook.addMsg('msg_simple', f'{biliapi.name}:风纪委当前裁决正确率为：{ret["data"]["rightRadio"]}%\n')
+    logging.info(
+        f'{biliapi.name}: 拥有风纪委员身份，开始获取案件投票，当前裁决正确率为：{ret["data"]["rightRadio"]}%')
+    webhook.addMsg(
+        'msg_simple', f'{biliapi.name}:风纪委当前裁决正确率为：{ret["data"]["rightRadio"]}%\n')
 
     baiduNLPConfig = task_config.get("baiduNLP", None)
     params = task_config.get("params", {})
@@ -59,7 +63,8 @@ async def judgement_task(biliapi: asyncbili,
                     except CancelledError as e:
                         raise e
                     except Exception as e:
-                        logging.warning(f'{biliapi.name}: 获取风纪委员案件异常，原因为{str(e)}，跳过本次投票')
+                        logging.warning(
+                            f'{biliapi.name}: 获取风纪委员案件异常，原因为{str(e)}，跳过本次投票')
                         break
                     if ret["code"] == 25008:
                         logging.info(f'{biliapi.name}: 风纪委员没有新案件了')
@@ -69,13 +74,27 @@ async def judgement_task(biliapi: asyncbili,
                         logging.info(f'{biliapi.name}: 风纪委员案件已审满')
                         break
                     elif ret["code"] != 0:
-                        logging.warning(f'{biliapi.name}: 获取风纪委员案件失败，信息为：{ret["message"]}')
+                        logging.warning(
+                            f'{biliapi.name}: 获取风纪委员案件失败，信息为：{ret["message"]}')
                         break
                     # cid = ret["data"]["id"]
                     case_id = ret["data"]["case_id"]
                     cid = case_id
                     params = task_config.get("params", {})
                     default = False
+
+                    try:
+                        caseInfo = await biliapi.juryNewCaseInfo(case_id)
+                    except CancelledError as e:
+                        raise e
+                    except Exception as e:
+                        logging.warning(
+                            f'{biliapi.name}: 获取{cid}的案件信息异常，原因为{str(e)}')
+                        break
+                    vote_num = params.get('vote', 1) - 1  # 1,2,3,4 -> 0,1,2,3
+                    vote_items = caseInfo["data"]["vote_items"]
+                    vote_item = caseInfo["data"]["vote_items"][vote_num]
+
                     # try:
                     #     ret = await biliapi.juryCase(cid)
                     # except CancelledError as e:
@@ -93,28 +112,37 @@ async def judgement_task(biliapi: asyncbili,
                     #         logging.warning(f'{biliapi.name}: 获取风纪委员案件他人投票结果异常，原因为{ret["message"]}，使用默认投票参数')
 
                     try:
-                        await sleep(11) # 延时 11 秒
-                        ret = await biliapi.juryNewVote(case_id, **params) #将参数params展开后传参
+                        await sleep(11)  # 延时 11 秒
+                        # 将参数params展开后传参
+                        params = params.copy()
+                        params["vote"] = vote_item.vote
+                        ret = await biliapi.juryNewVote(case_id, **params)
                     except CancelledError as e:
                         raise e
                     except Exception as e:
-                        logging.warning(f'{biliapi.name}: 风纪委员投票id为{cid}的案件异常，原因为{str(e)}')
+                        logging.warning(
+                            f'{biliapi.name}: 风纪委员投票id为{cid}的案件异常，原因为{str(e)}')
+                        break
                     else:
                         if ret["code"] == 0:
                             su += 1
                             if default:
-                                logging.info(f'{biliapi.name}: 风纪委员成功为id为{cid}的案件投({voteInfo[params["vote"]]})票')
+                                logging.info(
+                                    f'{biliapi.name}: 风纪委员成功为id为{cid}的案件投({vote_item["vote_text"]})票')
                             else:
-                                logging.info(f'{biliapi.name}: 风纪委员成功为id为{cid}的案件投({voteInfo[params["vote"]]})票')
+                                logging.info(
+                                    f'{biliapi.name}: 风纪委员成功为id为{cid}的案件投({vote_item["vote_text"]})票')
                                 # logging.info(f'{biliapi.name}: 风纪委员成功为id为{cid}的案件投({voteInfo[params["vote"]]})票，当前案件投票数({voteInfo[vote[0][0]]}{vote[0][1]}票),({voteInfo[vote[1][0]]}{vote[1][1]}票),({voteInfo[vote[2][0]]}{vote[2][1]}票)')
-                        else:   
-                            logging.warning(f'{biliapi.name}: 风纪委员投票id为{cid}的案件失败，信息为：{ret["message"]}')
-
+                        else:
+                            logging.warning(
+                                f'{biliapi.name}: 风纪委员投票id为{cid}的案件失败，信息为：{ret["message"]}')
+                            break
                 if over or run_once or su >= vote_num:
                     logging.info(f'{biliapi.name}: 风纪委员投票成功完成{su}次后退出')
                     break
                 else:
-                    logging.info(f'{biliapi.name}: 风纪委员投票等待{check_interval}s后继续获取案件')
+                    logging.info(
+                        f'{biliapi.name}: 风纪委员投票等待{check_interval}s后继续获取案件')
                     await sleep(check_interval)
 
     except TimeoutError:
