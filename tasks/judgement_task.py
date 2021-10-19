@@ -122,7 +122,6 @@ async def judgement_task(biliapi: asyncbili,
                         # 将参数params展开后传参
                         params = params.copy()
                         params["vote"] = vote_item["vote"]
-                        logging.info(f"params:{params}")
                         ret = await biliapi.juryNewVote(case_id, **params)
                     except CancelledError as e:
                         raise e
