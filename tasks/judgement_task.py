@@ -112,7 +112,6 @@ async def judgement_task(biliapi: asyncbili,
 
                     try:
                         params_test = {
-                            "case_id": case_id,
                             "vote": 0,
                             "content": "",
                             "anonymous": 0,
